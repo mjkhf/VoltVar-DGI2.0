@@ -80,6 +80,9 @@ private:
     /// Updates the node's state.
     void vvc_slave();
     
+    /// gradient from master VVO
+    arma::mat Grad_slave1;
+	
     ////////////////////////////////////////////////////
     /// The amount of time it takes to do an VVC round
     const boost::posix_time::time_duration ROUND_TIME;
