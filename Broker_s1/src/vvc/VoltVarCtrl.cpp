@@ -144,14 +144,14 @@ void VVCAgent::HandleGradient(const GradientMessage & m, CPeerNode peer)
     Logger.Notice << "Got Gradients from "<< peer.GetUUID() << std::endl;
     Logger.Notice << "size of vector "<< m.gradient_value_size() << std::endl;
     using namespace arma;
-    mat xx=zeros(m.gradient_value_size(),1); 
-    //std::cout<<  xx  <<std::endl;
+    Grad_slave1 = zeros(m.gradient_value_size(),1); 
     for (int i = 0; i < m.gradient_value_size(); i++)
     {
-      xx(i,0) = m.gradient_value(i);
-      //std::cout<< i+1 << "    " << xx(i,0) <<std::endl;
+	  Grad_slave1(i,0) = m.gradient_value(i);
+	  //std::cout<< i+1 << "    " << Grad_slave1(i,0)<<std::endl;
     }
-    xx.save("xx.mat");// must be ROOT to execute
+    
+	Grad_slave1.save("Grad_slave1.mat");// must be ROOT to execute
     
 }
 
@@ -334,11 +334,26 @@ void VVCAgent::vvc_slave()
 	    
 	}
   using namespace arma;
-  mat XX;XX.load("xx.mat"); 
-  //std::cout << "gradient recieved:" << "\n" << XX << std::endl;
-  double sstA_cmd = mean(mean(XX.rows(1,3)));
-  double sstB_cmd = mean(mean(XX.rows(8,10)));
-  double sstC_cmd = mean(mean(XX.rows(15,17)));
+  double sstA_cmd; 
+  double sstB_cmd;
+  double sstC_cmd;
+  
+  bool status = Grad_slave1.load("Grad_slave1.mat");
+  if (status == true)
+  {
+	  std::cout << "loaded okay" << std::endl;
+	  //std::cout << Grad_slave1 << std::endl;
+	  sstA_cmd = mean(mean(Grad_slave1.rows(1,3)));
+	  sstB_cmd = mean(mean(Grad_slave1.rows(8,10)));
+	  sstC_cmd = mean(mean(Grad_slave1.rows(15,17)));
+  }
+  else
+  {
+	  std::cout <<" gradient not received ... keep default setting for SSTs "<<std::endl;
+	  sstA_cmd = 0;
+	  sstB_cmd = 0;
+	  sstC_cmd = 0;
+  }
 
   std::cout << "SSTs under Slave #1: SST2 SST3 SST4 \n" << endl;
   std::set<device::CDevice::Pointer> devices;
