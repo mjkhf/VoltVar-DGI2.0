@@ -782,6 +782,7 @@ catch(std::exception & e)
 // end of Pload reading
 
 // SST reading from RSCAD
+/*
 std::set<device::CDevice::Pointer> qsstaSet;
 
 //retrieve the set of Phase A load devices
@@ -1126,7 +1127,7 @@ catch(std::exception & e)
 {
   cout << "Error! Q Load Phase C did not recognize OUTPUT state!" << endl;
 }
-
+*/
 
 // end of SST reading
 
